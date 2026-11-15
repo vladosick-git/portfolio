@@ -4,8 +4,8 @@
 window.SITE = {
   name: "Владислав",
 
-  // Ник в Telegram без @, например "nik". Пока пусто — кнопки ведут на GitHub.
-  telegram: "",
+  // Ник в Telegram без @. Если оставить пустым, кнопки «Написать» поведут на GitHub.
+  telegram: "Vladosick_kent",
   github: "https://github.com/vladosick-git",
 
   // object: какой предмет собирается из частиц перед работой (bean, tyre, house, phone).

@@ -2,7 +2,7 @@
    Каждая деталь сидит на своей пружине: курсор её выталкивает, она возвращается с лёгким качанием.
    Детали стоят оболочкой поверх того же предмета из частиц, поэтому из щелей светит пыль. */
 import * as THREE from 'three';
-import { rot } from './shapes.js';
+import { rot } from './shapes.js?v=2';
 
 const VERT = `
 attribute vec3 aDir; attribute vec4 aRnd; attribute vec3 aCol; attribute vec4 aUv; attribute vec4 aMat; attribute vec4 aDyn; attribute vec4 aTint;
@@ -61,8 +61,8 @@ void main(){
     /* шарик материала: цвет и блик берём с картинки студийного шара по направлению нормали к зрителю */
     vec3 nv=normalize((viewMatrix*vec4(n,0.)).xyz);
     float idx=floor(vTint.a+.5);
-    vec3 mc=texture2D(uMc,(vec2(mod(idx,3.),1.-floor(idx/3.))+nv.xy*.47+.5)/vec2(3.,2.)).rgb;
-    c=pic?base*.94+mc*.55:mc*vTint.rgb*(1.-groove*.8);
+    vec3 mc=texture2D(uMc,(vec2(mod(idx,4.),1.-floor(idx/4.))+nv.xy*.47+.5)/vec2(4.,2.)).rgb;
+    c=pic?base*.95+mc*.38:mc*vTint.rgb*(1.-groove*.8);
   }else{
     c=pic?base*.96:base*(.09+d1*vec3(1.,.96,.9)+d2*.34*vec3(1.,.62,.38))*(1.-metal*.75);
     c+=env*(fres*(.18+gloss*.62)+metal*.55)*mix(vec3(1.),base*1.7,metal);
@@ -169,7 +169,7 @@ function phoneItems() {
   it.push({ p: [0, 0, -0.012], s: [0.67, 1.35, 0.06], d: [0, 0, -1], c: [58, 56, 58], m: [0.85, 0.9, 0, 0.03], uv: [0, 0, 0, -1] });
   for (const y of [0.3, 0.16]) it.push({ p: [0.338, y, -0.012], s: [0.012, 0.1, 0.022], d: [1, 0, 0], c: [96, 94, 96], m: [0.9, 1, 0, 0.005], uv: [0, 0, 0, -1] });
   for (let j = 0; j < R; j++) for (let i = 0; i < C; i++)
-    it.push({ p: [((i + 0.5) / C - 0.5) * sw, (0.5 - (j + 0.5) / R) * sh, 0.035], s: [(sw / C) * 0.972, (sh / R) * 0.972, 0.02], d: [0, 0, 1], c: [26, 24, 24], m: [0.95, 0, 0, 0.006], uv: [i / C, 1 - (j + 1) / R, 1 / C, 1 / R] });
+    it.push({ p: [((i + 0.5) / C - 0.5) * sw, (0.5 - (j + 0.5) / R) * sh, 0.035], s: [(sw / C) * 0.972, (sh / R) * 0.972, 0.02], d: [0, 0, 1], c: [26, 24, 24], m: [0.95, 0, 0, 0.006], uv: [i / C, 1 - (j + 1) / R, 1 / C, 1 / R], mc: 6 });
   return it;
 }
 
@@ -200,19 +200,35 @@ function beanGeometry() {
 
 const KINDS = { house: houseItems, tyre: tyreItems, phone: phoneItems, bean: beanItems };
 /* средний цвет каждого шарика: по нему считается, насколько деталь светлее или темнее своего материала */
-const REF = [[0.8, 0.8, 0.78], [0.13, 0.13, 0.13], [0.36, 0.2, 0.1], [0.65, 0.31, 0.2], [0.27, 0.23, 0.22], [0.4, 0.26, 0.16]];
+const REF = [[0.8, 0.8, 0.78], [0.13, 0.13, 0.13], [0.36, 0.2, 0.1], [0.65, 0.31, 0.2], [0.27, 0.23, 0.22], [0.4, 0.26, 0.16], [0.1, 0.1, 0.1]];
 const MC_FILES = ['chrome', 'rubber', 'bean', 'brick', 'slate', 'wood'];
+/* седьмой шарик, «стекло», необязательный: пока файла img/matcap/glass.jpg нет, он рисуется здесь же */
+function glassBall(g, x, y, S) {
+  const c = S / 2;
+  g.save(); g.beginPath(); g.arc(x + c, y + c, c, 0, 7); g.clip();
+  g.fillStyle = '#060505'; g.fillRect(x, y, S, S);
+  let gr = g.createRadialGradient(x + S * 0.3, y + S * 0.26, 0, x + S * 0.3, y + S * 0.26, S * 0.2);
+  gr.addColorStop(0, 'rgba(255,250,240,.95)'); gr.addColorStop(0.55, 'rgba(255,250,240,.22)'); gr.addColorStop(1, 'rgba(255,250,240,0)');
+  g.fillStyle = gr; g.fillRect(x, y, S, S);
+  gr = g.createLinearGradient(x + S * 0.84, 0, x + S * 0.99, 0);
+  gr.addColorStop(0, 'rgba(255,130,50,0)'); gr.addColorStop(0.6, 'rgba(255,130,50,.85)'); gr.addColorStop(1, 'rgba(255,130,50,0)');
+  g.fillStyle = gr; g.fillRect(x + S * 0.8, y + S * 0.18, S * 0.2, S * 0.64);
+  g.restore();
+}
 
 export class Pieces {
-  constructor(sw) { this.sw = sw; this.objs = new Map(); this.pt = 0; this.MC = { value: null }; this.MCon = { value: 0 }; }
+  constructor(sw) { this.sw = sw; this.objs = new Map(); this.pt = 0; this.MC = { value: null }; this.MCon = { value: 0 }; this.kickK = 0; }
 
-  /* шесть шариков материалов складываются в одну текстуру 3×2; пока она не загрузилась, свет считается формулой */
+  /* щелчок: детали рядом с курсором получают толчок и разлетаются, пружины потом возвращают их на место */
+  kick() { this.kickK = 1; }
+
+  /* шарики материалов складываются в одну текстуру 4×2; пока она не загрузилась, свет считается формулой */
   loadMatcaps(dir) {
-    Promise.all(MC_FILES.map(n => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = `${dir}/${n}.jpg`; }))).then(imgs => {
-      if (imgs.some(i => !i)) return;
-      const c = document.createElement('canvas'), S = 512; c.width = S * 3; c.height = S * 2;
+    Promise.all([...MC_FILES, 'glass'].map(n => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = `${dir}/${n}.jpg`; }))).then(imgs => {
+      if (imgs.slice(0, MC_FILES.length).some(i => !i)) return;
+      const c = document.createElement('canvas'), S = 512; c.width = S * 4; c.height = S * 2;
       const g = c.getContext('2d');
-      imgs.forEach((im, i) => g.drawImage(im, (i % 3) * S, Math.floor(i / 3) * S, S, S));
+      imgs.forEach((im, i) => { const x = (i % 4) * S, y = Math.floor(i / 4) * S; if (im) g.drawImage(im, x, y, S, S); else glassBall(g, x, y, S); });
       const t = new THREE.CanvasTexture(c); t.generateMipmaps = false; t.minFilter = THREE.LinearFilter;
       this.MC.value = t; this.MCon.value = 1;
     });
@@ -269,6 +285,7 @@ export class Pieces {
       ob.U.uShow.value = v; ob.U.uSpin.value = spin;
       if (ob.mesh.visible) this.simulate(ob, t, dt, spin);
     }
+    this.kickK = 0;
   }
 
   /* пружины: курсор выталкивает деталь, она возвращается и качается; в покое по предмету пробегает волна */
@@ -276,7 +293,7 @@ export class Pieces {
     const U = this.sw.U, mx = U.uMouse.value.x, my = U.uMouse.value.y, on = U.uMouseOn.value, R2 = Math.pow(U.uRad.value * 1.45, 2);
     const ca = Math.cos(spin), sa = Math.sin(spin), b = ob.bake, s = ob.s, C = ob.C, lift = ob.lift, K = 120, D = 11;
     const M = [ca * b[0] + sa * b[6], ca * b[1] + sa * b[7], ca * b[2] + sa * b[8], b[3], b[4], b[5], -sa * b[0] + ca * b[6], -sa * b[1] + ca * b[7], -sa * b[2] + ca * b[8]];
-    const ph = (t % 6) / 1.5, wpos = ph < 1 ? -1.5 + ph * 3 : 9, wamp = (1 - on) * 0.42;
+    const ph = (t % 6) / 1.5, wpos = ph < 1 ? -1.5 + ph * 3 : 9, wamp = (1 - on) * 0.42, kick = this.kickK * lift * 26;
     const { lc, dir, rn, x, v, n } = ob, d = ob.dyn.array;
     for (let i = 0; i < n; i++) {
       const j = i * 3, lx = lc[j], ly = lc[j + 1], lz = lc[j + 2];
@@ -292,6 +309,10 @@ export class Pieces {
       } else {
         const a = lift * (f * (0.6 + rn[i * 4 + 1] * 0.9) + wave + idle);
         tx = wxd * a; ty = wyd * a; tz = wzd * a;
+      }
+      if (kick) {
+        const g = kick * Math.exp(-(dx * dx + dy * dy) / (R2 * 2.6)) * (0.5 + rn[i * 4 + 2]), l = Math.hypot(dx, dy) + 1e-4;
+        if (ob.heap) { v[j] += (dx / l) * g; v[j + 1] += (dy / l) * g + g * 0.3; v[j + 2] += g * 0.8; } else { v[j] += wxd * g; v[j + 1] += wyd * g; v[j + 2] += wzd * g; }
       }
       v[j] += (K * (tx - x[j]) - D * v[j]) * dt; v[j + 1] += (K * (ty - x[j + 1]) - D * v[j + 1]) * dt; v[j + 2] += (K * (tz - x[j + 2]) - D * v[j + 2]) * dt;
       x[j] += v[j] * dt; x[j + 1] += v[j + 1] * dt; x[j + 2] += v[j + 2] * dt;

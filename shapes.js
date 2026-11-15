@@ -355,12 +355,18 @@ export function fall(t, ix, from, n, D) {
   }
 }
 
-/* подставка монитора: ножка и основание из тёмной пыли с редкими искрами */
-export function stand(t, ix, from, n, D) {
-  const p = [0, 0, 0];
+/* подставка монитора: искры по краям ножки и по ободу основания (сами ножка и основание твёрдые, см. devices.js).
+   G = { neck, bw, bd, tilt }: высота ножки в долях высоты экрана, ширина и глубина основания в долях ширины, наклон основания */
+export function stand(t, ix, from, n, D, G) {
+  const p = [0, 0, 0], ct = Math.cos(G.tilt), st = Math.sin(G.tilt);
   for (let j = 0; j < n; j++) {
-    if (rnd() < 0.45) { p[0] = (rnd() - 0.5) * D.w * 0.1; p[1] = -D.h / 2 - rnd() * D.h * 0.22; p[2] = (rnd() - 0.5) * D.w * 0.02 - D.w * 0.02; }
-    else { const a = rnd() * 6.2832, r = Math.sqrt(rnd()); p[0] = Math.cos(a) * r * D.w * 0.17; p[1] = -D.h / 2 - D.h * 0.23 + Math.sin(a) * r * D.h * 0.012; p[2] = Math.sin(a) * r * D.w * 0.08; }
+    if (rnd() < 0.3) { p[0] = (rnd() < 0.5 ? -1 : 1) * D.w * 0.05 + (rnd() - 0.5) * D.w * 0.008; p[1] = -D.h / 2 - rnd() * D.h * G.neck; p[2] = -0.02; }
+    else {
+      /* обод основания: стадион, точки жмутся к краю */
+      const a = rnd() * 6.2832, r = 1 - rnd() * rnd() * 0.5, hw = D.w * G.bw / 2, hd = D.w * G.bd / 2;
+      const px = Math.cos(a) * r * (hw - hd) + Math.sign(Math.cos(a)) * Math.min(1, Math.abs(Math.cos(a)) * 2.2) * hd * r, py = Math.sin(a) * r * hd;
+      p[0] = px; p[1] = -D.h / 2 - D.h * G.neck + py * ct; p[2] = 0.02 + py * st;
+    }
     rot(p, D.rot.ry, D.rot.rx, D.rot.rz);
     const hot = rnd() < 0.3, l = 0.55 + rnd() * 0.45;
     put(t, ix[from + j], p[0] + D.C[0], p[1] + D.C[1], p[2] + D.C[2], hot ? 244 : 150 * l, hot ? 160 : 96 * l, hot ? 84 : 58 * l, 238);

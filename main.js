@@ -1,9 +1,11 @@
 /* Страница: что показывать на каждом шаге прокрутки.
-   Сцена частиц живёт в swarm.js, фигуры в shapes.js, тексты и работы в data.js. */
-import { Swarm } from './swarm.js';
-import * as S from './shapes.js';
-import { Pieces } from './pieces.js';
-import { Devices } from './devices.js';
+   Сцена частиц живёт в swarm.js, фигуры в shapes.js, тексты и работы в data.js.
+   ?v=2 в адресах: номер версии. После правок кода менять его сразу везде (здесь, в pieces.js и в index.html),
+   иначе браузер посетителя может смешать старые файлы с новыми. */
+import { Swarm } from './swarm.js?v=2';
+import * as S from './shapes.js?v=2';
+import { Pieces } from './pieces.js?v=2';
+import { Devices, BASE_TILT, NECK, BASE_W, BASE_D } from './devices.js?v=2';
 
 const D = document.documentElement, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const SITE = window.SITE, WORKS = SITE.works, NW = WORKS.length;
@@ -24,6 +26,51 @@ $$('[data-contact]').forEach(a => {
 $$('[data-github]').forEach(a => { if (!tg) return a.remove(); a.href = SITE.github; a.target = '_blank'; a.rel = 'noopener'; });
 $('#year').textContent = new Date().getFullYear();
 $$('#stepsList p').forEach(p => { p.innerHTML = `<span>${p.innerHTML}</span>`; });
+
+/* ---------- заголовки собираются из пыли: каждая буква прилетает со своей стороны и выходит из размытия ---------- */
+function dustify(el) {
+  if (calm || !el || el.classList.contains('dustin')) return;
+  el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+  let n = 0;
+  const word = txt => {
+    const w = document.createElement('span'); w.className = 'w'; w.setAttribute('aria-hidden', 'true');
+    for (const ch of txt) {
+      if (ch === '\u00a0') { w.append(ch); continue; }
+      const c = document.createElement('span'), a = Math.random() * 6.2832, r = 30 + Math.random() * 90;
+      c.className = 'c'; c.textContent = ch;
+      c.style.cssText = `--dx:${(Math.cos(a) * r - 40).toFixed(0)}px;--dy:${(Math.sin(a) * r * 0.7).toFixed(0)}px;--dr:${((Math.random() - 0.5) * 50).toFixed(0)}deg;--d:${(n * 26 + Math.random() * 140).toFixed(0)}ms;--bx:${(60 + Math.random() * 300).toFixed(0)}px;--by:${(-110 + Math.random() * 150).toFixed(0)}px;--br:${((Math.random() - 0.3) * 60).toFixed(0)}deg`;
+      w.append(c); n++;
+    }
+    return w;
+  };
+  [...el.childNodes].forEach(node => {
+    if (node.nodeType !== 3) return;
+    const f = document.createDocumentFragment();
+    node.textContent.split(/( +)/).forEach(part => { if (part) f.append(part.trim() ? word(part) : ' '); });
+    node.replaceWith(f);
+  });
+  el.classList.add('dustin');
+}
+$$('.hero h1, .about h2, .steps h2, .contact h2').forEach(dustify);
+if (!calm && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-in', e.isIntersecting)), { threshold: 0.6 });
+  $$('.about h2, .steps h2, .contact h2').forEach(h => io.observe(h));
+}
+
+/* ---------- кнопки тянутся к курсору, под курсором по ним ходит тёплое пятно ---------- */
+if (fine && !calm) {
+  let hot = null;
+  addEventListener('pointermove', e => {
+    const b = e.target.closest?.('.btn, .arrow:not(:disabled)');
+    if (hot && hot !== b) { hot.style.transform = ''; hot = null; }
+    if (!b) return;
+    const r = b.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    b.style.setProperty('--mx', x.toFixed(0) + 'px'); b.style.setProperty('--my', y.toFixed(0) + 'px');
+    b.style.transform = `translate3d(${((x / r.width - 0.5) * 12).toFixed(1)}px,${((y / r.height - 0.5) * 10).toFixed(1)}px,0)`;
+    hot = b;
+  }, { passive: true });
+  document.addEventListener('mouseout', e => { if (hot && !e.relatedTarget) { hot.style.transform = ''; hot = null; } });
+}
 
 /* ---------- зерно ---------- */
 (function () {
@@ -65,6 +112,7 @@ function showWork(k) {
   ].filter(Boolean);
   info.classList.remove('is-in');
   info.innerHTML = parts.map((p, i) => p.replace(/^<(\w+)/, `<$1 style="--i:${i}"`)).join('');
+  dustify(info.querySelector('.info__title'));
   info.offsetWidth;
   info.classList.add('is-in');
   $('#cur').textContent = pad(k + 1);
@@ -75,16 +123,24 @@ function showWork(k) {
 /* ---------- предпросмотр ---------- */
 const viewer = $('#viewer'), vFrame = $('#vFrame'), vStage = $('#vStage');
 function setDev(d) { vStage.className = 'viewer__stage ' + d; $$('#vDev button').forEach(b => b.setAttribute('aria-pressed', b.dataset.d === d)); }
-function openV(k) {
+let vTimer = 0;
+function openV(k, from) {
   const w = WORKS[k]; if (!w) return;
+  clearTimeout(vTimer);
   vFrame.src = w.link; $('#vTitle').textContent = `${w.title}, ${w.kind.toLowerCase()}`; $('#vOpen').href = w.link;
-  setDev(''); viewer.hidden = false; document.body.style.overflow = 'hidden'; window.LEN?.stop(); $('#vClose').focus();
+  /* окно раскрывается кругом из той кнопки, на которую нажали */
+  const r = from?.getBoundingClientRect();
+  viewer.style.setProperty('--vx', (r ? r.left + r.width / 2 : innerWidth / 2) + 'px');
+  viewer.style.setProperty('--vy', (r ? r.top + r.height / 2 : innerHeight / 2) + 'px');
+  setDev(''); viewer.hidden = false; viewer.offsetWidth; viewer.classList.add('is-open');
+  document.body.style.overflow = 'hidden'; window.LEN?.stop(); $('#vClose').focus();
 }
 function closeV() {
-  if (viewer.hidden) return;
-  viewer.hidden = true; vFrame.src = 'about:blank'; document.body.style.overflow = ''; window.LEN?.start();
+  if (viewer.hidden || !viewer.classList.contains('is-open')) return;
+  viewer.classList.remove('is-open'); document.body.style.overflow = ''; window.LEN?.start();
+  vTimer = setTimeout(() => { viewer.hidden = true; vFrame.src = 'about:blank'; }, calm ? 0 : 520);
 }
-document.addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) openV(+b.dataset.v); });
+document.addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) openV(+b.dataset.v, b); });
 $('#vDev').onclick = e => { const b = e.target.closest('button'); if (b) setDev(b.dataset.d); };
 $('#vClose').onclick = closeV;
 
@@ -144,6 +200,7 @@ function sync({ i, t }) {
     heroText.style.transform = h ? `translate3d(0,${(-h * 60).toFixed(1)}px,0)` : '';
     heroText.style.filter = h > 0.02 && h < 1 ? `blur(${(h * 8).toFixed(1)}px)` : '';
     heroText.style.visibility = h >= 1 ? 'hidden' : '';
+    heroText.style.setProperty('--h', h.toFixed(3));
     hint.style.opacity = h > 0 ? Math.max(0, 1 - h * 3).toFixed(2) : '';
   }
   const ai = i === 0 ? 0 : i === 1 ? (t < 0.62 ? 0 : 1) : i === 2 ? (t < 0.62 ? 1 : 2) : 2;
@@ -252,6 +309,8 @@ function defineBuilders(imgs, imgsM) {
   };
   B.a3 = t => { const R = stage(); paperPlane(t, [R.cx, R.cy, 0], Math.min(R.w * 0.36, R.h * 0.5)); };
   B.plane = t => paperPlane(t, [sw.wx(sw.W * 0.52), sw.wy(sw.H * (wide() ? 0.29 : 0.27)), 0], Math.min(sw.W * (wide() ? 0.19 : 0.34), sw.H * 0.27) * sw.u, true);
+  /* самолётик улетел за правый верхний угол, через экран остался шлейф */
+  B.planeGo = t => paperPlane(t, [sw.wx(sw.W * 1.22), sw.wy(-sw.H * 0.32), -1.5], Math.min(sw.W * (wide() ? 0.19 : 0.34), sw.H * 0.27) * sw.u * 0.8, true);
 
   const OBJ = { bean: [S.mound, { ry: 0.3, rx: 0.34 }, 0.22], tyre: [S.tyre, { ry: -0.55, rx: 0.15 }, 0.6], house: [S.house, { ry: 0.6, rx: 0.22 }, 0.5] };
   WORKS.forEach((w, k) => {
@@ -266,18 +325,20 @@ function defineBuilders(imgs, imgsM) {
     /* работа открыта: рой рисует всё, чего нет у твёрдых устройств — кромки, подставку, осыпь и предметы рядом */
     B['s' + k] = t => {
       const ix = S.perm(N), u = sw.u, P = devices.layout(scrRect()), M = P.mon, F = P.ph;
-      const nM = Math.round(N * 0.5), nP = Math.round(N * 0.08), nE = Math.round(N * 0.085), nE2 = Math.round(N * 0.03), nS = Math.round(N * 0.03), nF = Math.round(N * 0.09), nG = Math.round(N * 0.022);
+      const nM = Math.round(N * 0.5), nP = Math.round(N * 0.08), nE = Math.round(N * 0.08), nE2 = Math.round(N * 0.03), nS = Math.round(N * (wide() ? 0.018 : 0)), nF = Math.round(N * 0.08);
       let from = 0;
       const cols = scr(t, ix, from, nM, imgs[k], { cx: M.C[0], cy: M.C[1], z: M.C[2], w: M.w, h: M.h }, M.rot); from += nM;
-      scr(t, ix, from, nP, imgsM[k] || imgs[k], { cx: F.C[0], cy: F.C[1], z: F.C[2], w: F.w, h: F.h }, F.rot); from += nP;
+      const colsM = scr(t, ix, from, nP, imgsM[k] || imgs[k], { cx: F.C[0], cy: F.C[1], z: F.C[2], w: F.w, h: F.h }, F.rot); from += nP;
+      devices.grid(cols, colsM);
       S.frame(t, ix, from, nE, M, M.w * 0.014); from += nE;
       S.frame(t, ix, from, nE2, F, F.w * 0.04); from += nE2;
-      S.stand(t, ix, from, nS, M); from += nS;
+      S.stand(t, ix, from, nS, M, { neck: NECK, bw: BASE_W, bd: BASE_D, tilt: BASE_TILT }); from += nS;
       S.fall(t, ix, from, nF, M); from += nF;
-      /* рядом с устройствами парят предметы этой работы */
+      /* рядом с устройствами парят предметы этой работы: один крупный у верхнего угла, два поменьше в пыли */
       const fn = { bean: S.bean, tyre: S.tyre, house: S.house }[w.object];
-      if (fn) [[0.6, 0.6, 0.085, 0.5], [-0.46, -0.7, 0.06, -0.8], [0.72, -0.62, 0.04, 1.4]].forEach(([dx, dy, sc, a]) => {
-        S.obj(t, ix, from, nG, fn, [M.C[0] + M.w * dx, M.C[1] + M.h * dy, 0.3], M.h * sc * (w.object === 'bean' ? 1 : 0.8), { ry: a, rx: 0.4, rz: a * 0.7 }); from += nG;
+      if (fn) [[0.6, 0.62, 0.17, 0.5, 0.05], [-0.5, -0.74, 0.12, -0.8, 0.032], [0.8, -0.66, 0.07, 1.4, 0.016]].forEach(([dx, dy, sc, a, share]) => {
+        const nG = Math.round(N * share);
+        S.obj(t, ix, from, nG, fn, [M.C[0] + M.w * dx, M.C[1] + M.h * dy, 0.3], M.h * sc * (w.object === 'bean' ? 1 : 0.8) * (wide() ? 1 : 0.55), { ry: a, rx: 0.4, rz: a * 0.7 }); from += nG;
       });
       S.dust(t, ix, from, N - from, box(), S.PAL_DARK);
       t.size = (M.w / u / cols) * 1.3; t.sq = 1;
@@ -310,7 +371,13 @@ const tween = (fn, ms, at, cb) => new Promise(res => {
 
 let pairA = 'dust0', pairB = 'dust0', introMix = 0;
 let heroCur = 0, heroNext = 0, heroMix = 0, heroAt = 0, heroT0 = 0, cycling = false;
-const reveal = () => { D.classList.add('go'); D.classList.remove('lock'); setTimeout(() => heroText.classList.add('is-live'), 1400); };
+let flyK = 0, flyTo = 0, flyHover = false, flyTimer = 0;
+$$('.contact [data-contact]').forEach(a => {
+  a.addEventListener('pointerenter', () => { flyHover = true; if (flyTo < 1) flyTo = 0.16; });
+  a.addEventListener('pointerleave', () => { flyHover = false; if (flyTo < 1) flyTo = 0; });
+  a.addEventListener('click', () => { flyTo = 1; clearTimeout(flyTimer); flyTimer = setTimeout(() => (flyTo = flyHover ? 0.16 : 0), 2600); });
+});
+const reveal = () => { D.classList.add('go'); D.classList.remove('lock'); $('.hero h1').classList.add('is-in'); setTimeout(() => heroText.classList.add('is-live'), 2300); };
 
 function startLenis() {
   if (calm || !fine) return;
@@ -362,6 +429,9 @@ async function boot() {
       pieces.frame(T, k => (p < 2 * k ? sm(2 * k - 0.16, 2 * k - 0.01, p) : 1 - sm(2 * k + 0.2, 2 * k + 0.42, p)));
     }
     if (mode !== 'scroll') { sw.setPair(pairA, pairB); sw.render(T, introMix); return; }
+    /* финал: самолётик собран. Кнопка под курсором: он подаётся вперёд; нажали: улетает и оставляет след */
+    flyK += (flyTo - flyK) * (flyTo > flyK ? 0.045 : 0.03);
+    if (st.i === stops.length - 2 && st.e > 0.985 && flyK > 0.004 && sw.builders.planeGo) { heroAt = now; sw.setPair('plane', 'planeGo'); sw.render(T, flyK); return; }
     if (st.i > 0) { heroAt = now; sw.setPair(order[st.i], order[st.i + 1]); sw.render(T, st.e); return; }
     /* страница стоит наверху: первый экран сам пересыпается из работы в работу */
     if (st.t < 0.01) {
@@ -410,7 +480,7 @@ async function boot() {
   startLenis();
 
   /* остальные фигуры считаем заранее, по одной, чтобы прокрутка не дёргалась */
-  const keys = [...WORKS.map((w, k) => 'h' + k), ...order.slice(1)];
+  const keys = [...WORKS.map((w, k) => 'h' + k), ...order.slice(1), 'planeGo'];
   let pi = 0;
   const pre = () => { while (pi < keys.length && sw.has(keys[pi])) pi++; if (pi < keys.length) { sw.target(keys[pi]); setTimeout(pre, 40); } };
   setTimeout(pre, 300);
@@ -424,8 +494,9 @@ async function boot() {
     }, 180);
   });
   addEventListener('pointermove', e => sw.pointer(e.clientX, e.clientY), { passive: true });
-  addEventListener('pointerdown', e => sw.pointer(e.clientX, e.clientY), { passive: true });
+  addEventListener('pointerdown', e => { sw.pointer(e.clientX, e.clientY); if (viewer.hidden && !D.classList.contains('mopen')) { sw.pulse(e.clientX, e.clientY); pieces?.kick(); } }, { passive: true });
   addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') setTimeout(() => sw.pointerOff(), 500); }, { passive: true });
+  addEventListener('pointercancel', () => setTimeout(() => sw.pointerOff(), 500), { passive: true });
   document.addEventListener('mouseout', e => { if (!e.relatedTarget) sw.pointerOff(); });
 }
 
