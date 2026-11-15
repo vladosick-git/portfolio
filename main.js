@@ -430,4 +430,10 @@ async function boot() {
 }
 
 addEventListener('resize', () => { if (!sw) measure(); });
-boot();
+/* Вкладка может открыться в фоне с нулевым размером окна: ждём настоящий размер.
+   Если сцена всё же не запустилась, показываем обычную страницу, а не чёрный экран. */
+(async function start() {
+  while (!(innerWidth > 0 && innerHeight > 0)) await wait(120);
+  try { await boot(); }
+  catch (e) { console.warn('сцена не запустилась', e); sw = null; pieces = null; devices = null; mode = 'scroll'; D.classList.add('nogl'); reveal(); }
+})();
