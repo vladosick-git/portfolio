@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Владислав. Сайты, парсеры и сервисы под ключ</title>
+  <meta name="description" content="Делаю сайты, парсеры, панели и Telegram-ботов. Пишу с нуля и сам запускаю на сервере.">
+  <meta name="theme-color" content="#060504">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Владислав. Сайты, парсеры и сервисы под ключ">
+  <meta property="og:description" content="Лендинги, сбор данных, панели и Telegram-боты. Пишу с нуля и сам запускаю на сервере.">
+  <meta property="og:url" content="https://vladosick-git.github.io/portfolio/">
+  <meta property="og:image" content="https://vladosick-git.github.io/portfolio/img/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    /* заставка: полная один раз за вкладку, потом короткая; при «уменьшить движение» её нет */
+    (function () {
+      var d = document.documentElement, s = null;
+      try { history.scrollRestoration = 'manual'; } catch (e) {}
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { d.classList.add('calm', 'go'); return; }
+      try { s = sessionStorage.getItem('roy-intro'); } catch (e) {}
+      d.classList.add(s ? 'intro-short' : 'intro', 'lock');
+      setTimeout(function () { d.classList.add('go'); d.classList.remove('lock'); }, 10000);
+    })();
+  </script>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+
+<div class="paper" aria-hidden="true"></div>
+<canvas id="swarm" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="loader" id="loader" aria-hidden="true"><span id="ldN">0</span></div>
+
+<header class="top" id="top">
+  <a class="top__name" href="#hero">Владислав</a>
+  <nav class="top__nav" id="nav" aria-label="Разделы">
+    <a href="#about">Обо мне</a>
+    <a href="#works">Работы</a>
+    <a href="#steps">Как заказать</a>
+    <a href="#contact">Написать</a>
+  </nav>
+  <button class="top__burger" id="burger" type="button" aria-expanded="false" aria-controls="mnav">Меню</button>
+</header>
+<nav class="mnav" id="mnav" aria-label="Разделы">
+  <a href="#about">Обо мне</a>
+  <a href="#works">Работы</a>
+  <a href="#steps">Как заказать</a>
+  <a href="#contact">Написать</a>
+</nav>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="hero__stick">
+      <div class="hero__text" id="heroText">
+        <h1>Сайты, парсеры и&nbsp;сервисы под&nbsp;ключ</h1>
+        <p>Лендинги, сбор данных, панели и Telegram-боты. Пишу с нуля и сам запускаю на сервере.</p>
+        <div class="actions">
+          <a class="btn" href="#works">Смотреть работы</a>
+          <a class="link" data-contact href="#contact">Написать в Telegram</a>
+        </div>
+      </div>
+      <img class="fallback" src="img/works/zhar.jpg" alt="Сайт магазина кофе «Жар»" loading="lazy">
+      <p class="hint" id="hint">листайте</p>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about__stick">
+      <div class="about__col">
+        <h2>Что я делаю</h2>
+        <ul class="skills" id="skills">
+          <li>
+            <h3>Сайты и лендинги</h3>
+            <p>Страница под рекламу, каталог, магазин. С формами, корзиной и версией для телефона.</p>
+          </li>
+          <li>
+            <h3>Сбор данных и автоматизация</h3>
+            <p>Парсеры, выгрузки, отчёты в таблицу. То, что делали руками по часу в день, делается одной кнопкой.</p>
+          </li>
+          <li>
+            <h3>Боты и панели</h3>
+            <p>Telegram-боты с уведомлениями, веб-панели за паролем, запуск на вашем сервере.</p>
+          </li>
+        </ul>
+        <p class="about__note">Работаю один: вы пишете тому, кто делает ваш проект. Рабочую версию показываю по ссылке, после сдачи оставляю инструкцию.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="works" id="works">
+    <div class="works__stick" id="worksStick">
+      <h2 class="vh">Работы</h2>
+      <div class="device" id="device">
+        <div class="mon">
+          <div class="mon__scr" id="scr"></div>
+          <div class="mon__neck"></div>
+          <div class="mon__base"></div>
+        </div>
+        <div class="ph"><div class="ph__scr" id="phScr"></div></div>
+      </div>
+      <div class="info" id="info" aria-live="polite"></div>
+      <div class="works__nav">
+        <button class="arrow" id="prev" type="button" aria-label="Предыдущая работа">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="count"><b id="cur">01</b> / <span id="total">04</span></p>
+        <button class="arrow" id="next" type="button" aria-label="Следующая работа">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps" id="steps">
+    <div class="steps__stick" id="stepsStick">
+      <h2>Как заказать</h2>
+      <ol class="steps__list" id="stepsList">
+        <li><h3>Пишете в Telegram</h3><p>Коротко опишите задачу. Если есть пример того, что нравится, пришлите ссылку.</p></li>
+        <li><h3>Обсуждаем</h3><p>Задаю вопросы, предлагаю решение, называю срок и цену.</p></li>
+        <li><h3>Смотрите рабочую версию</h3><p>Показываю живой результат по ссылке, а не картинки. Вносим правки.</p></li>
+        <li><h3>Запускаем</h3><p>Выкладываю на сервер, подключаю домен и уведомления, оставляю инструкцию.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact__in">
+      <h2>Есть задача?<br>Напишите</h2>
+      <p>Отвечу, сколько это займёт и сколько будет стоить.</p>
+      <div class="actions">
+        <a class="btn" data-contact href="#">Написать в Telegram</a>
+        <a class="link" data-github href="#">GitHub</a>
+      </div>
+    </div>
+    <footer class="foot">
+      <span>© <span id="year"></span> Владислав</span>
+      <span>Сайты, парсеры, панели и Telegram-боты под ключ</span>
+    </footer>
+  </section>
+</main>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Предпросмотр сайта" hidden>
+  <div class="viewer__bar">
+    <p id="vTitle"></p>
+    <div class="viewer__dev" id="vDev" role="group" aria-label="Размер экрана">
+      <button type="button" data-d="" aria-pressed="true">Компьютер</button>
+      <button type="button" data-d="t" aria-pressed="false">Планшет</button>
+      <button type="button" data-d="m" aria-pressed="false">Телефон</button>
+    </div>
+    <div class="viewer__act">
+      <a id="vOpen" href="#" target="_blank" rel="noopener">Открыть отдельно</a>
+      <button id="vClose" type="button">Закрыть</button>
+    </div>
+  </div>
+  <div class="viewer__stage" id="vStage"><iframe id="vFrame" title="Сайт" src="about:blank"></iframe></div>
+</div>
+
+<script src="data.js"></script>
+<script type="module" src="main.js"></script>
+</body>
+</html>

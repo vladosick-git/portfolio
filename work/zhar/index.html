@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЖАР - свежеобжаренный кофе</title>
+<meta name="description" content="Обжариваем спешелти-кофе маленькими партиями и отправляем в день обжарки по всей России.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32'%3E%3Cpath fill='%23FF5A1F' d='M12 0c1 6 8 10 8 19a8 8 0 0 1-16 0c0-4 2-7 4-9 0 3 1 5 3 6-1-6 1-11 1-16z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&family=Commissioner:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- SVG-символы -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="flame" viewBox="0 0 24 32">
+      <path fill="currentColor" d="M12 0c1 6 8 10 8 19a8 8 0 0 1-16 0c0-4 2-7 4-9 0 3 1 5 3 6-1-6 1-11 1-16z"/>
+      <path fill="var(--flame-in, #F2E6D3)" d="M12 30a4.2 4.2 0 0 1-4.2-4.2c0-2.6 1.7-4 2.8-5.8.2 1.8.9 2.9 2 3.3.6-1.6.7-3.3.4-5 2 1.9 3.2 4.4 3.2 7.5A4.2 4.2 0 0 1 12 30z"/>
+    </symbol>
+    <symbol id="burst" viewBox="-12 -12 24 24">
+      <g stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+        <path d="M0-11V11M-11 0H11M-7.8-7.8 7.8 7.8M-7.8 7.8 7.8-7.8M-4.2-10.2 4.2 10.2M-10.2-4.2 10.2 4.2M-4.2 10.2 4.2-10.2M-10.2 4.2 10.2-4.2"/>
+      </g>
+    </symbol>
+    <symbol id="mountains" viewBox="0 0 100 44">
+      <path fill="var(--mnt-back, #E8A598)" d="M0 44 18 22l8 6 16-22 14 16 9-8 15 14 8-6 12 12v10z"/>
+      <path fill="var(--mnt-front, #2B1A12)" d="M0 44v-6l10-9 7 5 9-11 10 10 6-4 8 7 6-13 7 9 5-2 7 7 4-3 6 6 7-5 8 6v9z"/>
+      <path fill="var(--mnt-front, #2B1A12)" d="M8 37l2-6 2 6zm6 1 2.4-8 2.4 8zm60-2 2-6 2 6zm6 1 2.6-9 2.6 9zm7 0 2-6 2 6z"/>
+      <path fill="var(--mnt-snow, #F6EEE2)" opacity=".7" d="M42 6l-4 5.5 3-1 1.4 2 1.6-2.4 2.4 1.4z"/>
+    </symbol>
+    <symbol id="bean" viewBox="-10 -14 20 28">
+      <ellipse rx="9" ry="13" fill="url(#beanGrad)"/>
+      <path d="M.6-12.4C-4.4-6-.1-2.4-.6 1.4-1.2 6 3.6 8.4.4 12.4" fill="none" stroke="#1A0D07" stroke-width="1.9" stroke-linecap="round"/>
+      <ellipse cx="-3.6" cy="-6" rx="2" ry="4.2" fill="#fff" opacity=".18"/>
+    </symbol>
+    <radialGradient id="beanGrad" cx="35%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#7A4528"/><stop offset=".55" stop-color="#4A2614"/><stop offset="1" stop-color="#26120A"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<div class="topbar">бесплатная доставка от 2 000 ₽ · обжариваем каждый вторник и пятницу</div>
+
+<header class="header wrap">
+  <a class="logo" href="#" aria-label="ЖАР">Ж<span class="logo__a">А<svg><use href="#flame"/></svg></span>Р</a>
+  <nav class="nav">
+    <a href="#catalog">Кофе</a>
+    <a href="#sub">Подписка</a>
+    <a href="#shops">Кофейни</a>
+    <a href="#">Оптом</a>
+    <a href="#">О нас</a>
+  </nav>
+  <div class="header__right">
+    <a href="#" class="login">Войти</a>
+    <a href="#" class="cart" aria-label="Корзина">
+      <svg viewBox="0 0 26 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 2h4l3 13h13l3-9H7"/><circle cx="10" cy="20.5" r="1.8"/><circle cx="19" cy="20.5" r="1.8"/></svg>
+      <span class="cart__count" id="cartCount">2</span>
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero__inner">
+    <h1 class="hero__title">Обжарили<br>вчера.<br><span class="l3">Привезём <em>завтра.</em></span></h1>
+    <p class="hero__lead">Обжариваем спешелти-кофе маленькими партиями <br>и отправляем в день обжарки по всей России.</p>
+    <div class="hero__btns">
+      <a href="#catalog" class="btn btn--fire">Выбрать кофе <span>→</span></a>
+      <a href="#shops" class="btn btn--ghost">Кофейни на карте</a>
+    </div>
+  </div>
+
+  <div class="hero__art" aria-hidden="true">
+    <div class="beans" id="heroBeans"></div>
+    <div class="bag bag--hero">
+      <img src="assets/01_bag.png" alt="">
+      <div class="label">
+        <svg class="label__flame"><use href="#flame"/></svg>
+        <b class="label__brand">ЖАР</b>
+        <span class="label__name">Эфиопия<br>Иргачеффе</span>
+        <svg class="label__mnt"><use href="#mountains"/></svg>
+        <span class="label__meta">спешелти кофе<br>250 г</span>
+      </div>
+    </div>
+    <div class="sticker sticker--pink">ноты:<br>черника, жасмин,<br>бергамот</div>
+    <div class="sticker sticker--mustard">обжарка:<br>2 дня назад</div>
+    <svg class="stamp" viewBox="0 0 200 200">
+      <defs>
+        <path id="ringTop" d="M100 100m-72 0a72 72 0 1 1 144 0"/>
+        <path id="ringBot" d="M100 100m-80 0a80 80 0 0 0 160 0"/>
+        <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.1 1.5"/><feComposite in="SourceGraphic" operator="in"/></filter>
+      </defs>
+      <g filter="url(#rough)">
+        <circle cx="100" cy="100" r="96" fill="#FF5A1F"/>
+        <circle cx="100" cy="100" r="60" fill="#F7E9D6"/>
+        <circle cx="100" cy="100" r="55" fill="none" stroke="#FF5A1F" stroke-width="3"/>
+        <text class="stamp__ring"><textPath href="#ringTop" startOffset="50%" text-anchor="middle">обжарено в казани</textPath></text>
+        <text class="stamp__ring"><textPath href="#ringBot" startOffset="50%" text-anchor="middle">обжарено в казани</textPath></text>
+        <circle cx="12" cy="100" r="3.5" fill="#F7E9D6"/><circle cx="188" cy="100" r="3.5" fill="#F7E9D6"/>
+        <text x="100" y="112" text-anchor="middle" class="stamp__main">СВЕЖАК</text>
+      </g>
+    </svg>
+    <div class="try">попробуй это
+      <svg viewBox="0 0 90 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 36C22 18 46 10 82 9"/><path d="M70 2l12 7-11 7"/></svg>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track" id="tickerTrack">
+    <span>свежая обжарка</span><svg><use href="#burst"/></svg>
+    <span>доставка по России</span><svg><use href="#burst"/></svg>
+    <span>зерно и молотый</span><svg><use href="#burst"/></svg>
+    <span>87+ баллов SCA</span><svg><use href="#burst"/></svg>
+  </div>
+</div>
+
+<section class="catalog wrap" id="catalog">
+  <h2 class="h2">Что в обжарке на этой неделе</h2>
+  <div class="catalog__bar">
+    <div class="pills" id="filters">
+      <button class="pill is-active" data-f="all">Все</button>
+      <button class="pill" data-f="espresso">Эспрессо</button>
+      <button class="pill" data-f="filter">Фильтр</button>
+      <button class="pill" data-f="decaf">Без кофеина</button>
+    </div>
+    <button class="sort">Сначала популярные <svg viewBox="0 0 10 6"><path d="M0 0h10L5 6z" fill="currentColor"/></svg></button>
+  </div>
+
+  <div class="cards" id="cards">
+    <article class="card" data-tags="filter">
+      <div class="bag bag--card" style="--label-bg:#E8A598"><img src="assets/01_bag.png" alt=""><div class="label"><svg class="label__flame"><use href="#flame"/></svg><b class="label__brand">ЖАР</b><span class="label__name">Эфиопия<br>Иргачеффе</span><svg class="label__mnt"><use href="#mountains"/></svg><span class="label__meta">спешелти кофе · 250 г</span></div></div>
+      <div class="card__body">
+        <div class="badges"><span class="badge">Фильтр</span></div>
+        <h3 class="card__name">Эфиопия Иргачеффе</h3>
+        <p class="card__notes">черника, жасмин</p>
+        <div class="dots" data-v="4" title="Кислотность 4 из 5"></div>
+        <div class="grind"><button class="is-active">Зерно</button><button>Молотый</button></div>
+      </div>
+      <div class="card__foot"><p class="price"><b>890 ₽</b> / 250 г</p><button class="btn btn--fire btn--sm add">В корзину</button></div>
+    </article>
+
+    <article class="card" data-tags="espresso filter">
+      <div class="bag bag--card" style="--label-bg:#E3B23C"><img src="assets/01_bag.png" alt=""><div class="label"><svg class="label__flame"><use href="#flame"/></svg><b class="label__brand">ЖАР</b><span class="label__name">Колумбия<br>Уила</span><svg class="label__mnt"><use href="#mountains"/></svg><span class="label__meta">спешелти кофе · 250 г</span></div></div>
+      <div class="card__body">
+        <div class="badges"><span class="badge">Эспрессо и фильтр</span></div>
+        <h3 class="card__name">Колумбия Уила</h3>
+        <p class="card__notes">карамель, апельсин</p>
+        <div class="dots" data-v="3" title="Кислотность 3 из 5"></div>
+        <div class="grind"><button class="is-active">Зерно</button><button>Молотый</button></div>
+      </div>
+      <div class="card__foot"><p class="price"><b>790 ₽</b> / 250 г</p><button class="btn btn--fire btn--sm add">В корзину</button></div>
+    </article>
+
+    <article class="card" data-tags="espresso">
+      <div class="bag bag--card" style="--label-bg:#8A8F3C"><img src="assets/01_bag.png" alt=""><div class="label"><svg class="label__flame"><use href="#flame"/></svg><b class="label__brand">ЖАР</b><span class="label__name">Бразилия<br>Серрадо</span><svg class="label__mnt"><use href="#mountains"/></svg><span class="label__meta">спешелти кофе · 250 г</span></div></div>
+      <div class="card__body">
+        <div class="badges"><span class="badge">Эспрессо</span><span class="badge badge--fire">ХИТ</span></div>
+        <h3 class="card__name">Бразилия Серрадо</h3>
+        <p class="card__notes">шоколад, фундук</p>
+        <div class="dots" data-v="2" title="Кислотность 2 из 5"></div>
+        <div class="grind"><button class="is-active">Зерно</button><button>Молотый</button></div>
+      </div>
+      <div class="card__foot"><p class="price"><b>690 ₽</b> / 250 г</p><button class="btn btn--fire btn--sm add">В корзину</button></div>
+    </article>
+
+    <article class="card" data-tags="filter">
+      <div class="bag bag--card" style="--label-bg:#FF6B33"><img src="assets/01_bag.png" alt=""><div class="label"><svg class="label__flame"><use href="#flame"/></svg><b class="label__brand">ЖАР</b><span class="label__name">Кения<br>АА</span><svg class="label__mnt"><use href="#mountains"/></svg><span class="label__meta">спешелти кофе · 250 г</span></div></div>
+      <div class="card__body">
+        <div class="badges"><span class="badge">Фильтр</span><span class="badge badge--dark">НОВИНКА</span></div>
+        <h3 class="card__name">Кения АА</h3>
+        <p class="card__notes">смородина, томат</p>
+        <div class="dots" data-v="5" title="Кислотность 5 из 5"></div>
+        <div class="grind"><button class="is-active">Зерно</button><button>Молотый</button></div>
+      </div>
+      <div class="card__foot"><p class="price"><b>990 ₽</b> / 250 г</p><button class="btn btn--fire btn--sm add">В корзину</button></div>
+    </article>
+    <p class="cards__empty" id="cardsEmpty">Декаф обжариваем раз в месяц. Следующая партия - в пятницу.</p>
+  </div>
+</section>
+
+<section class="roast">
+  <div class="roast__photo">
+    <img src="assets/03_roaster.jpg" alt="Барабанный ростер и охлаждающий лоток со свежими зёрнами">
+    <p class="roast__hand">хороший<br>кофе меняет<br>людей</p>
+  </div>
+  <div class="roast__content">
+    <h2 class="h2 h2--light">3 дня от обжарки до чашки</h2>
+    <ol class="steps">
+      <li><span class="steps__ico"><svg viewBox="0 0 24 32"><use href="#flame" style="--flame-in:#2B1A12"/></svg></span><p><b>ВТ</b> - обжариваем партию 12 кг</p></li>
+      <li><span class="steps__ico"><svg viewBox="-10 -14 20 28"><ellipse rx="9" ry="13" fill="currentColor"/><path d="M.6-12.4C-4.4-6-.1-2.4-.6 1.4-1.2 6 3.6 8.4.4 12.4" fill="none" stroke="#2B1A12" stroke-width="2.2" stroke-linecap="round"/></svg></span><p><b>СР</b> - даём кофе отдохнуть и проводим каппинг</p></li>
+      <li><span class="steps__ico"><svg viewBox="0 0 32 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 4h17v13H2zM19 9h6l4 5v3h-10z"/><circle cx="8" cy="19" r="2.6" fill="#2B1A12"/><circle cx="24" cy="19" r="2.6" fill="#2B1A12"/></svg></span><p><b>ЧТ</b> - отправляем СДЭКом и Почтой России</p></li>
+    </ol>
+    <p class="roast__note">да, мы пробуем<br>каждую партию
+      <svg viewBox="0 0 120 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 16C40 9 80 6 117 3"/><path d="M14 18c30-5 60-8 90-10"/></svg>
+    </p>
+  </div>
+</section>
+
+<section class="sub wrap" id="sub">
+  <div class="sub__box">
+    <div class="sub__left">
+      <h2 class="h2">Кофе каждый месяц</h2>
+      <p class="sub__big">-15%</p>
+      <p class="sub__text">Сами выбираем лучшие лоты, <br>вы просто открываете коробку.</p>
+    </div>
+    <div class="sub__form">
+      <div class="seg" id="segWeight">
+        <button data-w="250">250 г</button><button data-w="500" class="is-active">500 г</button><button data-w="1000">1 кг</button>
+      </div>
+      <div class="seg seg--2" id="segFreq">
+        <button data-n="2">раз в 2 недели</button><button data-n="1" class="is-active">раз в месяц</button>
+      </div>
+      <p class="sub__price"><b id="subPrice">1 360 ₽/мес</b> <s id="subOld">1 600 ₽</s></p>
+      <button class="btn btn--dark sub__cta">Оформить подписку</button>
+    </div>
+    <img class="sub__img" src="assets/06_box.png" width="1100" height="970" alt="Коробка подписки с двумя пачками кофе и открыткой">
+  </div>
+</section>
+
+<section class="shops wrap" id="shops">
+  <div class="shops__left">
+    <h2 class="h2">Приходи на чашку</h2>
+    <div class="map" id="map" role="img" aria-label="Карта Казани с двумя кофейнями ЖАР"></div>
+  </div>
+  <div class="shops__right">
+    <div class="shop">
+      <img src="assets/04_cafe_bauman.jpg" alt="Кофейня ЖАР на Баумана">
+      <p><b>ул. Баумана, 44</b><span>ежедневно 8:00-22:00</span></p>
+    </div>
+    <div class="shop">
+      <img src="assets/05_cafe_pushkina.jpg" alt="Кофейня ЖАР на Пушкина">
+      <p><b>ул. Пушкина, 12</b><span>ежедневно 8:00-21:00</span></p>
+    </div>
+    <a class="btn btn--ghost shops__route" href="#">Построить маршрут</a>
+  </div>
+</section>
+
+<section class="reviews wrap">
+  <h2 class="h2">Пишут нам</h2>
+  <div class="notes">
+    <figure class="note note--pink"><blockquote>Иргачеффе как<br>черничный пирог.<br>Беру уже третий раз!</blockquote><figcaption>- Лена, Москва <span class="stars">★★★★★</span></figcaption></figure>
+    <figure class="note note--mustard"><blockquote>Пришёл через 2 дня<br>после обжарки, пахло<br>на весь подъезд</blockquote><figcaption>- Тимур</figcaption></figure>
+    <figure class="note note--olive"><blockquote>Подписка спасает<br>каждое утро</blockquote><figcaption>- Аня, Казань</figcaption></figure>
+    <figure class="note note--cream"><blockquote>Лучший эспрессо-бленд<br>в городе</blockquote><figcaption>- Кирилл, бариста</figcaption></figure>
+  </div>
+  <div class="reviews__foot">
+    <a class="insta-handle" href="#">@zhar.coffee</a>
+    <p class="rating"><span>★</span> 4.9 на Яндекс Картах · 820 отзывов</p>
+  </div>
+</section>
+
+<section class="insta wrap">
+  <img src="assets/07_insta_cappuccino.jpg" alt="Капучино в чашке ЖАР">
+  <img src="assets/08_insta_hands.jpg" alt="Зёрна в ладонях">
+  <img src="assets/09_insta_pourover.jpg" alt="Заваривание в воронке">
+  <img src="assets/10_insta_cafe.jpg" alt="Интерьер кофейни">
+  <img src="assets/11_insta_window.jpg" alt="Пачка кофе на подоконнике">
+</section>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <a class="logo logo--big" href="#" aria-label="ЖАР">Ж<span class="logo__a">А<svg><use href="#flame" style="--flame-in:#2B1A12"/></svg></span>Р</a>
+    <div class="fcol"><h4>Магазин</h4><a href="#">Кофе</a><a href="#">Подписка</a><a href="#">Подарочные наборы</a><a href="#">Оптом</a></div>
+    <div class="fcol"><h4>Помощь</h4><a href="#">Доставка</a><a href="#">Оплата</a><a href="#">Возврат</a></div>
+    <div class="fcol"><h4>Контакты</h4><a href="tel:+78432001717">+7 (843) 200-17-17</a><a href="mailto:hi@zhar.coffee">hi@zhar.coffee</a>
+      <div class="social">
+        <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M22 3.2 1.9 11c-1.2.5-1.2 1.4 0 1.7l5.1 1.6 2 6c.2.7.6.9 1.1.5l2.9-2.4 5.3 3.9c.9.5 1.6.2 1.8-.9L23.6 4.8c.4-1.5-.5-2.2-1.6-1.6zM8.3 13.9l10.5-6.6c.5-.3.9-.1.5.3l-8.6 7.8-.4 3.9z"/></svg></a>
+        <a href="#" aria-label="ВКонтакте"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M13 18.5C5.6 18.5 1.4 13.4 1.2 5h3.7c.1 6.2 2.9 8.8 5 9.3V5h3.5v5.3c2.1-.2 4.3-2.6 5-5.3h3.5c-.6 3.3-3 5.7-4.7 6.7 1.7.8 4.4 2.9 5.4 6.8h-3.8c-.8-2.6-2.9-4.6-5.4-4.8v4.8z"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="wrap footer__bottom">
+    <p>© 2026 ЖАР · обжарено в Казани</p>
+    <div class="pay">
+      <svg class="pay__mir" viewBox="0 0 64 18" aria-label="Мир"><text x="0" y="16" font-family="Commissioner" font-weight="900" font-size="17" font-style="italic" fill="currentColor" letter-spacing="-.5">МИР</text></svg>
+      <span class="pay__sbp"><svg viewBox="0 0 20 24" aria-hidden="true"><path fill="#5B57A2" d="M0 5.2 3 10.4v3.2L0 18.8z"/><path fill="#D90751" d="M11.5 8.5 14.3 6.8l5.7-.1-8.5 5.2z"/><path fill="#FAB718" d="M11.5 8.4v6.9L8.5 13.5V0z"/><path fill="#ED6F26" d="M20 6.7l-5.7.1-2.8-1.7L3 0z"/><path fill="#63B22F" d="M11.5 23.9v-8.6L8.5 13.5v10.4z"/><path fill="#1487C9" d="M14.3 17.2 3 10.4 0 5.2l20 12z"/><path fill="#017F36" d="M8.5 23.9 11.5 15.3l2.8 1.9L20 17.2z"/><path fill="#984995" d="M0 18.8 8.5 13.5 3 10.4z"/></svg>СБП</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
